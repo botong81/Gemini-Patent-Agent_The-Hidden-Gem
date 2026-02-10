@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Gemini Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 머티리얼 심볼 (Material Symbols) -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        #bg-image {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            cursor: default;
+        }
+
+        /* Hotspot for the "Share" button (Estimated position) */
+        #share-hotspot {
+            position: absolute;
+            top: 20px;
+            right: 150px;
+            /* Adjusted for estimated Share button location */
+            width: 80px;
+            height: 40px;
+            background-color: rgba(255, 0, 0, 0.0);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        #share-hotspot:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Modal Overlay */
+        #app-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #app-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        #app-frame-container {
+            width: 90%;
+            max-width: 1000px;
+            height: 85%;
+            background: transparent;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        #app-modal.active #app-frame-container {
+            transform: scale(1);
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: white;
+        }
+
+        /* Gemini Gradient Text Style */
+        .gemini-gradient-text {
+            background: linear-gradient(to right, #4285F4, #9B72CB, #D96570);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        /* Lock Icon Trigger */
+        #lock-trigger {
+            position: absolute;
+            top: 15px;
+            /* Kept consistent with previous demo */
+            right: 150px;
+            /* Placing it to the right of the Share button (estimated) */
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 20;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(2px);
+        }
+
+        #lock-trigger:hover {
+            border-color: white;
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Background Image -->
+    <img src="demo_gemini.png" alt="Gemini Demo Background" id="bg-image">
+
+    <!-- Lock Icon Trigger -->
+    <div id="lock-trigger" title="Launch Idea Vault">
+        <span class="material-symbols-outlined text-2xl gemini-gradient-text select-none">lock_person</span>
+    </div>
+
+    <!-- Modal containing the App -->
+    <div id="app-modal">
+        <!-- Close area (click outside) -->
+        <div class="absolute inset-0" onclick="closeModal()"></div>
+
+        <div id="app-frame-container">
+            <iframe src="idea_vault.html" title="Gemini Idea Vault"></iframe>
+        </div>
+    </div>
+
+    <script>
+        const lockTrigger = document.getElementById('lock-trigger');
+        const modal = document.getElementById('app-modal');
+
+        // Open Modal Function
+        function openApp() {
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+        }
+
+        // Event Listeners
+        lockTrigger.addEventListener('click', openApp);
+
+        // Close Modal
+        function closeModal() {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300); // Match transition duration
+        }
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+
+</body>
+
+</html>
