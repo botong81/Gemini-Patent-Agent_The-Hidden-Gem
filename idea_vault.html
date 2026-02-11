@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini Idea Vault</title>
+    <title>Gemini Idea Vault: High-Fidelity Prototype</title>
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 구글 폰트 (Google Fonts) -->
+    <!-- Google Fonts -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Google+Sans:wght@400;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Google+Sans:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap"
         rel="stylesheet">
-    <!-- 머티리얼 심볼 (Material Symbols) -->
+    <!-- Material Symbols -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
@@ -22,22 +22,26 @@
                 extend: {
                     fontFamily: {
                         sans: ['Google Sans', 'Roboto', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
                     },
                     colors: {
                         gemini: {
                             blue: '#4285F4',
-                            purple: '#A142F4', // 신비로운 느낌을 위해 조정됨
-                            light: '#F8F9FA',
+                            purple: '#A142F4',
                         },
                         gold: {
                             500: '#FFD700',
-                            600: '#D4AF37', // 메탈릭 골드
-                            700: '#AA8C2C',
+                            600: '#D4AF37',
                             glow: 'rgba(255, 215, 0, 0.5)',
                         },
+                        neon: {
+                            blue: '#00f3ff',
+                            purple: '#bd00ff',
+                        },
                         secure: {
-                            bg: '#121212', // 보안 모드용 다크 배경
-                            card: '#1E1E1E',
+                            bg: '#000000', // Deep black
+                            card: '#0f0f0f',
+                            border: '#333333',
                             text: '#E0E0E0'
                         }
                     },
@@ -45,11 +49,13 @@
                         'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'slide-up': 'slide-up 0.5s ease-out forwards',
                         'fade-in': 'fade-in 0.3s ease-out forwards',
+                        'spin-slow': 'spin 3s linear infinite',
+                        'border-flash': 'border-flash 1s ease-in-out infinite',
                     },
                     keyframes: {
                         'pulse-glow': {
-                            '0%, 100%': { boxShadow: '0 0 10px rgba(66, 133, 244, 0.5)' },
-                            '50%': { boxShadow: '0 0 20px rgba(161, 66, 244, 0.8)' },
+                            '0%, 100%': { boxShadow: '0 0 5px rgba(255, 215, 0, 0.2)' },
+                            '50%': { boxShadow: '0 0 15px rgba(255, 215, 0, 0.6)' },
                         },
                         'slide-up': {
                             '0%': { transform: 'translateY(20px)', opacity: '0' },
@@ -58,6 +64,10 @@
                         'fade-in': {
                             '0%': { opacity: '0' },
                             '100%': { opacity: '1' },
+                        },
+                        'border-flash': {
+                            '0%, 100%': { borderColor: 'rgba(212, 175, 55, 0.3)' },
+                            '50%': { borderColor: 'rgba(212, 175, 55, 1)' },
                         }
                     }
                 }
@@ -65,9 +75,9 @@
         }
     </script>
     <style>
-        /* 커스텀 스크롤바 */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
 
         ::-webkit-scrollbar-track {
@@ -79,56 +89,100 @@
             border-radius: 4px;
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+        .dark ::-webkit-scrollbar-thumb {
+            background: #333;
         }
 
-        /* 보안 모드 스타일 (Secure Mode Styles) */
+        /* Secure Mode Override */
         .secure-mode {
-            background: radial-gradient(circle at top, #1e1e2f, #000000);
+            background: #000000;
             color: #E0E0E0;
+            background-image:
+                radial-gradient(circle at 50% 0%, #1a1a2e 0%, #000000 70%);
         }
 
         .secure-mode .header {
-            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            background: rgba(0, 0, 0, 0.8);
         }
 
-        .secure-mode .patent-card {
+        /* Matrix Terminal Style */
+        .terminal-window {
+            font-family: 'Fira Code', monospace;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background: #161b22;
+            padding: 0.5rem;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            gap: 6px;
+        }
+
+        .terminal-dot {
+            width: 10px;
+            height: 10px;
+            rounded-full: 9999px;
+            border-radius: 50%;
+        }
+
+        .bg-red {
+            background-color: #ff5f56;
+        }
+
+        .bg-yellow {
+            background-color: #ffbd2e;
+        }
+
+        .bg-green {
+            background-color: #27c93f;
+        }
+
+        .terminal-body {
+            padding: 1rem;
+            height: 90px;
+            /* Reduced for 4 lines */
+            overflow-y: auto;
+            color: #3fb950;
+            /* Hacker Green */
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+
+        .log-line {
+            /* opacity: 0; animation: fade-in 0.1s forwards; */
+            /* Removed animation to prioritize typing visibility */
+        }
+
+        /* Secure Card Style */
+        .secure-card {
+            background: linear-gradient(145deg, #111, #1a1a1a);
             border: 1px solid #D4AF37;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
-            background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+            position: relative;
+            overflow: hidden;
         }
 
-        .secure-mode .user-bubble {
-            background-color: #333;
-            color: #fff;
+        .secure-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            animation: shine 3s infinite;
         }
 
-        .secure-mode .bot-bubble {
-            background-color: transparent;
-        }
-
-        .secure-mode .gemini-gradient-text {
-            background: linear-gradient(to right, #FFD700, #FDB931);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* 기본 모드 스타일 (Standard Mode Styles) */
-        body {
-            background-color: #F0F2F5;
-            transition: background 0.5s ease, color 0.5s ease;
-        }
-
-        .user-bubble {
-            background-color: #E3F2FD;
-            /* 라이트 블루 */
-            color: #1f2937;
-        }
-
-        .bot-bubble {
-            background-color: transparent;
+        @keyframes shine {
+            100% {
+                left: 100%;
+            }
         }
 
         .gemini-gradient-text {
@@ -138,7 +192,14 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* 토글 스위치 (Toggle Switch) */
+        .gold-gradient-text {
+            background: linear-gradient(to right, #FFD700, #FDB931, #AA8C2C);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Toggle */
         .toggle-checkbox:checked {
             right: 0;
             border-color: #D4AF37;
@@ -148,52 +209,127 @@
             background-color: #D4AF37;
         }
 
-        /* 로딩 애니메이션 (Loading Animation) */
-        .typing-dot {
-            animation: typing 1.4s infinite ease-in-out both;
+        /* Badge Animation */
+        .secure-badge {
+            animation: slide-down 0.5s ease-out;
         }
 
-        .typing-dot:nth-child(1) {
-            animation-delay: -0.32s;
+        @keyframes slide-down {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
-        .typing-dot:nth-child(2) {
-            animation-delay: -0.16s;
+        /* Terminal Cursor */
+        .typing-cursor::after {
+            content: '█';
+            display: inline-block;
+            margin-left: 2px;
+            animation: blink 1s step-end infinite;
+            color: #3fb950;
+            opacity: 0.7;
         }
 
-        @keyframes typing {
+        @keyframes blink {
 
             0%,
-            80%,
             100% {
-                transform: scale(0);
+                opacity: 0.7;
             }
 
-            40% {
-                transform: scale(1);
+            50% {
+                opacity: 0;
             }
         }
 
-        /* 모달 오버레이 (Modal Overlay) */
-        .modal-overlay {
-            backdrop-filter: blur(5px);
+        /* Cinematic Reveal Animation */
+        @keyframes cinematic-reveal {
+            0% {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+                filter: blur(10px);
+                box-shadow: 0 0 0 rgba(212, 175, 55, 0);
+            }
+
+            70% {
+                opacity: 1;
+                transform: scale(1.02) translateY(-2px);
+                filter: blur(0);
+                box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+            }
+        }
+
+        /* Minting Loader */
+        .minting-loader {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem;
+            color: #4285F4;
+            font-family: 'Google Sans', sans-serif;
+            font-weight: 500;
+        }
+
+        .dark .minting-loader {
+            color: #FFD700;
+        }
+
+        .loader-spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid currentColor;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
 
-<body class="h-screen flex flex-col font-sans transition-colors duration-500 relative overflow-hidden">
+<body class="h-screen flex flex-col font-sans transition-colors duration-500 relative overflow-hidden bg-gray-50">
 
-    <!-- 헤더 (Header) -->
+    <!-- Secure Connection Badge (Initially Hidden) -->
+    <div id="secure-badge"
+        class="hidden absolute top-0 left-0 right-0 z-[60] flex justify-center pointer-events-none secure-badge">
+        <div
+            class="bg-black/90 border-b border-l border-r border-[#D4AF37] text-[#D4AF37] px-6 py-2 rounded-b-lg shadow-[0_0_15px_rgba(212,175,55,0.3)] flex items-center gap-2 backdrop-blur-md">
+            <span class="material-symbols-outlined text-sm animate-pulse">lock</span>
+            <span class="text-xs font-mono tracking-widest font-bold">ENCRYPTED CONNECTION ESTABLISHED</span>
+        </div>
+    </div>
+
+    <!-- Header -->
     <header
         class="header flex justify-between items-center px-6 py-4 bg-white/80 backdrop-blur-md sticky top-0 z-50 transition-colors duration-500 dark:bg-black/50">
         <div class="flex items-center gap-2">
-            <!-- 아이콘/로고 플레이스홀더 -->
             <span class="material-symbols-outlined text-3xl gemini-gradient-text select-none">lock_person</span>
             <h1 class="text-xl font-medium tracking-tight text-gray-800 dark:text-white">Gemini <span
                     class="gemini-gradient-text font-bold">Idea Vault</span></h1>
         </div>
 
-        <!-- 모드 토글 (Mode Toggle) -->
         <div class="flex items-center gap-3">
             <label for="mode-toggle"
                 class="text-sm font-medium text-gray-500 dark:text-gray-300 cursor-pointer select-none transition-colors text-right"
@@ -210,9 +346,9 @@
         </div>
     </header>
 
-    <!-- 메인 채팅 영역 (Main Chat Area) -->
+    <!-- Main Chat Area -->
     <main class="flex-1 overflow-y-auto w-full max-w-4xl mx-auto px-4 py-8 scroll-smooth" id="chat-container">
-        <!-- 초기 환영 메시지 (Initial Greeting) -->
+        <!-- Initial Greeting -->
         <div class="flex flex-col items-center justify-center h-full text-center transition-opacity duration-500"
             id="welcome-message">
             <div
@@ -224,14 +360,19 @@
                 Securely chat with Gemini to instantly evaluate originality and draft provisional patent assets.
                 <br><span class="text-xs mt-2 block opacity-70">(Toggle Contest Mode for enhanced protection)</span>
             </p>
+
+            <!-- Meta Feature: Auto-Fill Button -->
+            <button onclick="autoFillDemo()"
+                class="mt-8 px-5 py-2.5 bg-gray-900 dark:bg-gray-700 text-white dark:text-gray-200 rounded-full text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-all flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                <span class="material-symbols-outlined text-sm">smart_toy</span>
+                Test with "Hidden Gem" Project
+            </button>
         </div>
 
-        <!-- 채팅 메시지가 여기에 추가됨 -->
         <div id="messages-list" class="flex flex-col gap-6 pb-24"></div>
-
     </main>
 
-    <!-- 입력 영역 (Input Area) -->
+    <!-- Input Area -->
     <footer
         class="w-full max-w-4xl mx-auto px-4 pb-6 pt-2 fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-white via-white to-transparent dark:from-black dark:via-black h-24 flex items-end justify-center transition-colors duration-500">
         <div
@@ -246,15 +387,12 @@
         </div>
     </footer>
 
-    <!-- 법적 문서 모달 (Modal for Legal Doc) -->
+    <!-- Legal Modal -->
     <div id="legal-modal" class="fixed inset-0 z-[60] hidden overflow-y-auto" aria-labelledby="modal-title"
         role="dialog" aria-modal="true">
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <!-- 배경 오버레이 (Background Overlay) -->
             <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity modal-overlay cursor-pointer"
                 id="modal-backdrop"></div>
-
-            <!-- 모달 패널 (Modal Panel) -->
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
             <div
                 class="relative inline-block align-bottom bg-white dark:bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full border border-gray-200 dark:border-gray-700">
@@ -266,344 +404,408 @@
                         </div>
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">
-                                Provisional Patent Application (US-2026-X892)
-                            </h3>
-                            <div
-                                class="mt-2 text-sm text-gray-500 dark:text-gray-400 h-64 overflow-y-auto font-mono bg-gray-50 dark:bg-black p-4 rounded border dark:border-gray-800">
-                                <p><strong>TITLE:</strong> SYSTEM AND METHOD FOR EMOTION VISUALIZATION APPARATUS</p>
-                                <p class="mt-2"><strong>ABSTRACT:</strong></p>
-                                <p>A wearable apparatus configured to detect physiological signals from a canine subject
-                                    and translate said signals into visual indicators. The system comprises a biosensor
-                                    array...</p>
-                                <p class="mt-2"><strong>CLAIMS:</strong></p>
-                                <ol class="list-decimal list-inside pl-2">
-                                    <li>An apparatus comprising: a sensor unit configured to measure heart rate
-                                        variability; a processor to interpret said variability as an emotional state...
-                                    </li>
-                                    <li>The apparatus of claim 1, further comprising an LED array wherein color
-                                        correlates to specific emotional states...</li>
-                                </ol>
-                                <p class="mt-4 text-xs text-gray-400">Generated by Gemini Patent Agent v3.0.
-                                    Confidential.</p>
-                            </div>
+                                Provisional Patent Draft</h3>
+                            <div class="mt-2 h-64 overflow-y-auto font-mono bg-white dark:bg-gray-100 p-4 rounded border border-gray-200 shadow-inner"
+                                id="legal-content"></div>
                         </div>
                     </div>
                 </div>
                 <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" id="close-modal"
-                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 dark:bg-gold-600 text-base font-medium text-white hover:bg-blue-700 dark:hover:bg-gold-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
-                        Download PDF
-                    </button>
+                    <button type="button"
+                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 dark:bg-gold-600 text-base font-medium text-white hover:bg-blue-700 dark:hover:bg-gold-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">Download
+                        PDF</button>
                     <button type="button" id="cancel-modal"
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-700 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                        Close
-                    </button>
+                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-700 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 공유 모달 (Share Modal) -->
-    <div id="share-modal" class="fixed inset-0 z-[60] hidden overflow-y-auto" aria-labelledby="share-modal-title"
-        role="dialog" aria-modal="true">
-        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-            <!-- 배경 오버레이 -->
-            <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75 modal-overlay cursor-pointer"
-                id="share-modal-backdrop"></div>
-
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-            <!-- 모달 패널 -->
-            <div
-                class="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white border border-gray-200 shadow-xl dark:bg-gray-900 dark:border-gray-700 rounded-2xl sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
-                <div>
-                    <div
-                        class="flex items-center justify-center w-12 h-12 mx-auto bg-blue-100 rounded-full dark:bg-gray-800">
-                        <span class="material-symbols-outlined text-blue-600 dark:text-gold-500">share</span>
-                    </div>
-                    <div class="mt-3 text-center sm:mt-5">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-white" id="share-modal-title">
-                            Share Patent Draft
-                        </h3>
-                        <div class="mt-4 grid grid-cols-1 gap-3">
-                            <!-- Google Drive -->
-                            <button
-                                class="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg shadow-sm dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg"
-                                    alt="Google Drive" class="w-5 h-5 mr-3">
-                                Save to Google Drive
-                            </button>
-                            <!-- Devpost -->
-                            <button
-                                class="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg shadow-sm dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700">
-                                <span
-                                    class="w-5 h-5 mr-3 flex items-center justify-center font-bold text-white bg-[#003E54] rounded-sm text-[10px]">D</span>
-                                Share to Devpost
-                            </button>
-                            <!-- GitHub -->
-                            <button
-                                class="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg shadow-sm dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c2/GitHub_Invertocat_Logo.svg"
-                                    alt="GitHub" class="w-5 h-5 mr-3 dark:invert">
-                                Push to GitHub
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-5 sm:mt-6">
-                    <button type="button" id="close-share-modal"
-                        class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-white dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none sm:text-sm">
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 로직 (Logic) -->
+    <!-- Scripts -->
     <script>
-        const modeToggle = document.getElementById('mode-toggle');
-        const modeLabel = document.getElementById('mode-label');
-        const header = document.querySelector('header');
-        const body = document.body;
-        const chatContainer = document.getElementById('chat-container');
-        const welcomeMessage = document.getElementById('welcome-message');
-        const messagesList = document.getElementById('messages-list');
-        const userInput = document.getElementById('user-input');
-        const sendBtn = document.getElementById('send-btn');
-        const footer = document.querySelector('footer');
+        // DOM Elements
+        const els = {
+            modeToggle: document.getElementById('mode-toggle'),
+            modeLabel: document.getElementById('mode-label'),
+            body: document.body,
+            chatContainer: document.getElementById('chat-container'),
+            welcomeMessage: document.getElementById('welcome-message'),
+            messagesList: document.getElementById('messages-list'),
+            userInput: document.getElementById('user-input'),
+            sendBtn: document.getElementById('send-btn'),
+            footer: document.querySelector('footer'),
+            secureBadge: document.getElementById('secure-badge'),
+            legalModal: document.getElementById('legal-modal'),
+            modalBackdrop: document.getElementById('modal-backdrop'),
+            cancelModalBtn: document.getElementById('cancel-modal'),
+            legalContent: document.getElementById('legal-content')
+        };
 
-        // 모달 요소 (Modal Elements)
-        const modal = document.getElementById('legal-modal');
-        const modalBackdrop = document.getElementById('modal-backdrop');
-        const closeModalBtn = document.getElementById('close-modal');
-        const cancelModalBtn = document.getElementById('cancel-modal');
-
+        // State
         let isSecureMode = false;
 
-        // 모드 토글 (Toggle Mode)
-        modeToggle.addEventListener('change', () => {
-            isSecureMode = modeToggle.checked;
-            if (isSecureMode) {
-                document.documentElement.classList.add('dark');
-                body.classList.add('secure-mode');
-                modeLabel.innerHTML = 'Contest Mode: <span class="font-bold text-gold-500">Hidden Gem (Patent Protection ON)</span>';
-                // 다크 모드 전환을 위해 푸터 그라데이션 업데이트
-                footer.classList.remove('from-white', 'via-white');
-                footer.classList.add('from-black', 'via-black');
-            } else {
-                document.documentElement.classList.remove('dark');
-                body.classList.remove('secure-mode');
-                modeLabel.innerHTML = 'Contest Mode: <span class="font-bold text-gray-700">OFF</span>';
-                // 푸터 그라데이션 업데이트
-                footer.classList.add('from-white', 'via-white');
-                footer.classList.remove('from-black', 'via-black');
-            }
+        // Toggle Mode Logic
+        els.modeToggle.addEventListener('change', () => {
+            isSecureMode = els.modeToggle.checked;
+            toggleTheme(isSecureMode);
         });
 
-        // 채팅 로직 (Chat Logic)
+        function toggleTheme(isSecure) {
+            if (isSecure) {
+                document.documentElement.classList.add('dark');
+                els.body.classList.add('secure-mode');
+                els.modeLabel.innerHTML = 'Contest Mode: <span class="font-bold text-gold-500">Hidden Gem (Patent Protection ON)</span>';
+                els.footer.classList.remove('from-white', 'via-white');
+                els.footer.classList.add('from-black', 'via-black');
+                els.secureBadge.classList.remove('hidden');
+                // Play sound effect (simulated with log)
+                console.log("[AUDIO] Secure Lock Sound Played");
+            } else {
+                document.documentElement.classList.remove('dark');
+                els.body.classList.remove('secure-mode');
+                els.modeLabel.innerHTML = 'Contest Mode: <span class="font-bold text-gray-700">OFF</span>';
+                els.footer.classList.add('from-white', 'via-white');
+                els.footer.classList.remove('from-black', 'via-black');
+                els.secureBadge.classList.add('hidden');
+            }
+        }
+
+        // Meta Feature: Auto-Fill
+        window.autoFillDemo = function () {
+            const pitch = "A platform where users' chats with AI are automatically converted into provisional patents. It solves the Privacy Paradox by keeping ideas in a Black Box until an annual auction event called Google Idea Week.";
+            let i = 0;
+            els.userInput.value = "";
+            els.welcomeMessage.style.display = 'none'; // Hide welcome immediately
+            els.userInput.focus();
+
+            const typeWriter = setInterval(() => {
+                if (i < pitch.length) {
+                    els.userInput.value += pitch.charAt(i);
+                    els.userInput.style.height = 'auto'; // Reset
+                    els.userInput.style.height = (els.userInput.scrollHeight) + 'px'; // Expand
+                    i++;
+                } else {
+                    clearInterval(typeWriter);
+                }
+            }, 10); // Fast typing
+        };
+
+        // Chat Logic
         function addMessage(content, isUser = false) {
             const wrapper = document.createElement('div');
             wrapper.className = `flex w-full ${isUser ? 'justify-end' : 'justify-start'} animate-slide-up`;
 
             const bubble = document.createElement('div');
-            bubble.className = `max-w-[80%] px-5 py-3 rounded-2xl text-md leading-relaxed shadow-sm ${isUser
-                ? 'user-bubble rounded-tr-none'
-                : 'bot-bubble rounded-tl-none border border-gray-100 dark:border-gray-800 dark:text-gray-200'
-                }`;
+            bubble.className = `max-w-[85%] px-5 py-3 rounded-2xl text-md leading-relaxed shadow-sm ${isUser
+                ? 'user-bubble rounded-tr-none bg-blue-50 dark:bg-gray-800 dark:text-gray-200'
+                : 'bot-bubble rounded-tl-none w-full'}`;
 
-            if (!isUser) {
-                // 봇 메시지는 HTML일 수 있음
-                bubble.innerHTML = content;
-            } else {
-                bubble.textContent = content;
-            }
+            if (isUser) bubble.textContent = content;
+            else bubble.innerHTML = content;
 
             wrapper.appendChild(bubble);
-            messagesList.appendChild(wrapper);
-
-            // 바닥으로 스크롤
-            const lastChild = messagesList.lastElementChild;
-            lastChild.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            els.messagesList.appendChild(wrapper);
+            els.chatContainer.scrollTo({
+                top: els.chatContainer.scrollHeight,
+                behavior: 'smooth'
+            });
         }
 
-        function createLoader() {
-            const wrapper = document.createElement('div');
-            wrapper.id = 'loading-indicator';
-            wrapper.className = 'flex w-full justify-start animate-fade-in my-2';
-
-            const container = document.createElement('div');
-            container.className = 'flex items-center gap-3 px-4 py-2';
-
-            // 스피너/점 (Spinner/Dots)
-            const dots = document.createElement('div');
-            dots.className = 'flex space-x-1';
-            dots.innerHTML = `
-                <div class="w-2 h-2 bg-blue-500 rounded-full typing-dot"></div>
-                <div class="w-2 h-2 bg-purple-500 rounded-full typing-dot"></div>
-                <div class="w-2 h-2 bg-pink-500 rounded-full typing-dot"></div>
-            `;
-
-            // 상태 텍스트 (Status Text)
-            const text = document.createElement('span');
-            text.id = 'loading-text';
-            text.className = 'text-sm font-medium text-gray-500 dark:text-gray-400 animate-pulse';
-            text.textContent = 'Analyzing Originality...';
-
-            container.appendChild(dots);
-            container.appendChild(text);
-            wrapper.appendChild(container);
-            messagesList.appendChild(wrapper);
-
-            return wrapper;
+        // Helper: Scroll to new content
+        function scrollToBottom() {
+            setTimeout(() => {
+                els.chatContainer.scrollTo({
+                    top: els.chatContainer.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }, 50); // Small delay for rendering
         }
 
-        function createPatentCard() {
-            const cardId = 'patent-card-' + Date.now();
-            const cardHTML = `
-                <div class="patent-card w-full max-w-md bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md mt-2 border border-blue-100 dark:border-gray-700 transition-all duration-300">
-                    <!-- 카드 헤더 (Card Header) -->
-                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 dark:from-gold-600 dark:to-yellow-700 px-4 py-2 flex justify-between items-center">
-                        <span class="text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1">
-                            <span class="material-symbols-outlined text-sm">verified</span> Provisional Patent
-                        </span>
-                        <span class="text-white/80 text-xs font-mono">US-2026-X892</span>
+        // Simulation: Scrolling Terminal
+        function createTerminal() {
+            const termId = 'term-' + Date.now();
+            return `
+                <div class="terminal-window w-full max-w-lg mb-4">
+                    <div class="terminal-header">
+                        <div class="terminal-dot bg-red"></div>
+                        <div class="terminal-dot bg-yellow"></div>
+                        <div class="terminal-dot bg-green"></div>
+                        <span class="text-xs text-gray-400 ml-2 font-mono">Gemini 3 pro_agent --node primary</span>
                     </div>
+                    <div class="terminal-body font-mono" id="${termId}">
+                        <div class="log-line text-blue-400">> INITIALIZING SECURE SESSION...</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function runTerminalSimulation(termId) {
+            const term = document.getElementById(termId);
+            const logs = [
+                { msg: "[INFO] Parsing input vectors...", delay: 20 },
+                { msg: "[INFO] Identifying novelty claims...", delay: 25 },
+                { msg: "[200 OK] Connected to USPTO (Secure Gateway)", delay: 30, color: 'text-green-400' },
+                { msg: "[CHECK] Cross-referencing US-2024-XXXX...", delay: 40 },
+                { msg: "[WARN] Prior Art similarity: 12.4% (PASS)", delay: 35, color: 'text-yellow-400' },
+                { msg: "[INFO] Generating claim structure (JSON)...", delay: 25 },
+                { msg: "[SUCCESS] Draft generated. Minting asset...", delay: 30, color: 'text-neon-blue' }
+            ];
+
+            let activeLine = null;
+
+            for (const log of logs) {
+                // Remove cursor from previous line
+                if (activeLine) activeLine.classList.remove('typing-cursor');
+
+                // Create new line
+                activeLine = document.createElement('div');
+                activeLine.className = `log-line typing-cursor ${log.color || ''}`;
+                activeLine.textContent = '> ';
+                term.appendChild(activeLine);
+                term.scrollTop = term.scrollHeight;
+
+                const text = log.msg;
+                const typeSpeed = log.delay; // Speed per char
+
+                // Typing effect
+                for (let i = 0; i < text.length; i++) {
+                    activeLine.textContent += text[i];
+                    term.scrollTop = term.scrollHeight;
+                    // Also scroll main chat
+                    if (i % 5 === 0) scrollToBottom();
+                    await new Promise(r => setTimeout(r, typeSpeed));
+                }
+
+                // Additional "Processing" pause at end of line
+                await new Promise(r => setTimeout(r, 300 + Math.random() * 400));
+            }
+            // Keep cursor blinking on last line for a moment
+            await new Promise(r => setTimeout(r, 500));
+            if (activeLine) activeLine.classList.remove('typing-cursor');
+        }
+
+        // Data Logic: Realistic Generation
+        function generateAssetData() {
+            // Realistic Price: $142,500 +- 5%
+            const basePrice = 142500;
+            const variance = basePrice * 0.05;
+            const price = Math.floor(basePrice + (Math.random() * variance * 2 - variance));
+            const formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(price);
+
+            // Patent ID: US-63/xxx,xxx
+            const idMain = Math.floor(Math.random() * 899 + 100);
+            const idSub = Math.floor(Math.random() * 899 + 100);
+            const patentId = `US-63/${idMain},${idSub}`;
+
+            // Score: 95-99
+            const keyFactor = "Method for resolving the 'Privacy Paradox' via real-time assetization of unstructured conversational data";
+
+            // Score: 95-99
+            const score = Math.floor(Math.random() * 5) + 95;
+
+            return { formattedPrice, patentId, keyFactor, score };
+        }
+
+        // Asset Card Creation
+        function createAssetCard(data) {
+            return `
+                <div class="secure-card w-full max-w-2xl mx-auto bg-black border border-[#D4AF37] rounded-lg overflow-hidden mt-4 relative group" style="animation: cinematic-reveal 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards; opacity: 0;">
+                    <!-- Metallic Sheen Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-transparent opacity-30 pointer-events-none"></div>
+                    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CiAgPHBhdGggZD0iTTAgMGg0MHY0MEgwVjB6IiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjEyLDE3NSw1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIwLjUiLz4KPC9zdmc+')] opacity-50 pointer-events-none"></div>
                     
-                    <!-- 내용 (Content) -->
-                    <div class="p-4">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold">Gemini Score</p>
-                                <div class="flex items-end gap-1">
-                                    <span class="text-3xl font-bold gemini-gradient-text dark:text-gold-500">99</span>
-                                    <span class="text-sm text-gray-400 mb-1">/100</span>
+                    <div class="flex flex-col md:flex-row h-full relative z-10">
+                        <!-- Left Panel: Score -->
+                        <div class="bg-gradient-to-br from-[#111] to-black p-6 md:w-1/3 flex flex-col justify-center items-center border-b md:border-b-0 md:border-r border-[#D4AF37]/30">
+                            <div class="text-[10px] text-[#D4AF37] tracking-[0.2em] font-bold mb-2 uppercase text-center">Originality Index</div>
+                            <div class="relative">
+                                <span class="text-6xl font-serif text-transparent bg-clip-text bg-gradient-to-b from-[#FFF] to-[#AAA] drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">${data.score}</span>
+                                <span class="absolute bottom-1 -right-6 text-xs text-gray-500">/100</span>
+                            </div>
+                            <div class="mt-4 px-3 py-1 border border-[#D4AF37] rounded text-[#D4AF37] text-[10px] tracking-widest uppercase">
+                                Verified
+                            </div>
+                        </div>
+
+                        <!-- Right Panel: Data -->
+                        <div class="p-6 md:w-2/3 flex flex-col justify-between bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a]">
+                            <div class="flex justify-between items-start border-b border-gray-800 pb-4 mb-4">
+                                <div>
+                                    <div class="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Asset ID</div>
+                                    <div class="font-mono text-white text-sm tracking-wide bg-black/40 px-2 py-1 rounded inline-block border border-gray-800">${data.patentId}</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Estimated Value</div>
+                                    <div class="font-serif text-2xl text-[#4ade80] drop-shadow-[0_0_5px_rgba(74,222,128,0.3)]">${data.formattedPrice}</div>
                                 </div>
                             </div>
-                            <div class="text-right">
-                                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold">Est. Auction Value</p>
-                                <p class="text-lg font-bold text-green-600 dark:text-green-400">$50k ~ $150k</p>
+                            
+                            <div class="mb-5">
+                                <div class="text-[10px] text-[#D4AF37]/70 uppercase tracking-wider mb-1">Key Factor</div>
+                                <div class="text-gray-300 text-sm italic font-light leading-relaxed border-l-2 border-[#D4AF37]/50 pl-3">
+                                    "${data.keyFactor}"
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="h-px bg-gray-100 dark:bg-gray-700 my-3"></div>
-                        
-                        <div class="flex gap-2">
-                             <button onclick="openModal()" class="flex-1 bg-blue-50 hover:bg-blue-100 dark:bg-gray-700 dark:hover:bg-gray-600 text-blue-600 dark:text-gold-500 py-2 px-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-1">
-                                <span class="material-symbols-outlined text-sm">gavel</span> View Legal Doc
-                             </button>
-                             <button onclick="openShareModal()" class="flex-none bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-400 py-2 px-3 rounded-lg transition-colors">
-                                <span class="material-symbols-outlined text-sm">share</span>
-                             </button>
+                            <div class="flex gap-3 justify-end mt-auto">
+                                <button onclick="openModal()" class="text-xs uppercase tracking-wider font-bold text-gray-400 hover:text-white transition-colors border-b border-transparent hover:border-white pb-0.5">
+                                    View Document
+                                </button>
+                                <div class="w-px h-4 bg-gray-700 mx-1 self-center"></div>
+                                <button onclick="shareResult('${data.patentId}')" class="text-xs uppercase tracking-wider font-bold text-[#D4AF37] hover:text-[#fff] transition-colors border-b border-transparent hover:border-[#D4AF37] pb-0.5 tooltip-trigger relative flex items-center gap-1">
+                                    Share Asset <span class="material-symbols-outlined text-[14px]">share</span>
+                                    <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 pointer-events-none transition-opacity tooltip-content whitespace-nowrap normal-case font-normal border border-gray-700">
+                                        Copy Link
+                                    </div>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
-            return cardHTML;
         }
 
+        // Main Interaction
         async function handleSubmission() {
-            const query = userInput.value.trim();
+            const query = els.userInput.value.trim();
             if (!query) return;
 
-            // 입력 초기화
-            userInput.value = '';
+            els.userInput.value = '';
+            els.welcomeMessage.style.display = 'none';
 
-            // 환영 메시지 숨김 처리
-            if (welcomeMessage) {
-                welcomeMessage.style.display = 'none';
-            }
-
-            // 1. 사용자 메시지 추가
+            // 1. User Message
             addMessage(query, true);
 
-            // 2. 로딩 표시
-            const loader = createLoader();
-            const loadingText = loader.querySelector('#loading-text');
+            // 2. Terminal
+            const termHTML = createTerminal();
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = termHTML;
+            els.messagesList.appendChild(wrapper);
+            scrollToBottom();
 
-            // 바닥으로 스크롤
-            loader.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            // Run Matrix Simulation
+            const termId = wrapper.querySelector('.terminal-body').id;
+            await runTerminalSimulation(termId);
 
-            // 시뮬레이션 단계 (Simulation Steps)
-            await new Promise(r => setTimeout(r, 1500));
-            loadingText.textContent = 'Searching USPTO Database...';
-
-            await new Promise(r => setTimeout(r, 1500));
-            loadingText.textContent = 'Drafting Claims with Gemini 3.0 Pro...';
-
-            await new Promise(r => setTimeout(r, 1500));
-
-            // 3. 로더 제거 및 결과 표시
-            loader.remove();
-
-            const resultHTML = `
-                <div class="animate-fade-in">
-                    <p class="mb-2 text-gray-800 dark:text-gray-200">Processing complete. I've analyzed your concept and generated a provisional patent draft.</p>
-                    ${createPatentCard()}
+            // 3. Minting Animation (Loader)
+            const loaderId = 'loader-' + Date.now();
+            const loaderHTML = `
+                <div id="${loaderId}" class="minting-loader animate-fade-in mb-4">
+                    <span class="loader-spinner"></span>
+                    <span class="tracking-wide">Minting Provisional Asset...</span>
                 </div>
             `;
-            addMessage(resultHTML, false);
+            const loaderWrapper = document.createElement('div');
+            loaderWrapper.innerHTML = loaderHTML;
+            els.messagesList.appendChild(loaderWrapper);
+            scrollToBottom();
+
+            // Simulate Network Delay for Minting
+            await new Promise(r => setTimeout(r, 3500));
+
+            // Remove Loader
+            loaderWrapper.remove();
+
+            // 4. Show Result
+            const data = generateAssetData();
+            const cardHTML = createAssetCard(data);
+
+            // Update Legal Modal Content (Professional Format - Light & Clean)
+            const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            els.legalContent.innerHTML = `
+                <div class="space-y-4 font-serif text-gray-900 antialiased tracking-tight">
+                    <div class="text-center border-b border-gray-300 pb-3 mb-4">
+                        <h4 class="text-lg font-bold uppercase tracking-widest text-black">Provisional Application for Patent</h4>
+                        <p class="text-[10px] text-gray-500 mt-1 tracking-wider font-semibold">UNITED STATES PATENT AND TRADEMARK OFFICE</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 text-xs mb-5 border-b border-gray-200 pb-3 opacity-90">
+                        <div>
+                            <span class="block font-bold text-gray-500 tracking-wide uppercase text-[10px]">Filing Date</span>
+                            <span class="font-mono text-gray-800">${date}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="block font-bold text-gray-500 tracking-wide uppercase text-[10px]">Application No.</span>
+                            <span class="font-mono text-gray-800">${data.patentId}</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="font-bold text-[10px] uppercase mb-1 border-b border-gray-300 inline-block pb-0.5 text-gray-600 leading-none">Title of Invention</h5>
+                        <p class="mb-2 text-sm font-semibold leading-tight text-gray-900">SYSTEM AND METHOD FOR ${query.toUpperCase()} USING GENERATIVE AI ARCHITECTURE</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="font-bold text-[10px] uppercase mb-1 border-b border-gray-300 inline-block pb-0.5 text-gray-600 leading-none">Abstract</h5>
+                        <p class="text-xs leading-relaxed text-justify text-gray-800 font-normal">
+                            ${query} The present invention relates to a novel apparatus configured to process, analyze, and generate output based on user inputs. 
+                            Specifically, the system comprises a first module for ingesting data, a second module for processing said data via a neural network, 
+                            and a third module for rendering the output on a client device. The method further includes steps for optimizing resource allocation 
+                            and ensuring data integrity during transmission.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h5 class="font-bold text-[10px] uppercase mb-1 border-b border-gray-300 inline-block pb-0.5 text-gray-600 leading-none">Claims</h5>
+                        <ol class="list-decimal list-outside ml-4 space-y-1 text-xs text-gray-800 leading-relaxed font-normal">
+                            <li>A system for ${query.substring(0, 20)}..., comprising: a processor; and a memory storing instructions that, when executed by the processor, cause the processor to perform operations comprising: receiving an input request; processing the request using a machine learning model; and generating a response.</li>
+                            <li>The system of claim 1, wherein the machine learning model is a transformer-based large language model.</li>
+                            <li>A method for implementing the system of claim 1, further comprising the step of encrypting user data prior to transmission.</li>
+                            <li class="italic text-gray-500">[CLAIMS 4-20 REDACTED FOR PRELIMINARY REVIEW]</li>
+                        </ol>
+                    </div>
+
+                    <div class="mt-6 pt-3 border-t border-gray-200 text-center opacity-60">
+                         <p class="text-[9px] text-gray-400 uppercase tracking-[0.2em] font-bold">CONFIDENTIAL - ATTORNEY CLIENT PRIVILEGE</p>
+                         <p class="text-[9px] text-gray-400 mt-1 font-mono">Generated by Gemini Legal Core v3.2</p>
+                    </div>
+                </div>
+            `;
+
+            // Replace terminal with card or append below? 
+            // Let's append below for history effect
+            const resultWrapper = document.createElement('div');
+            resultWrapper.innerHTML = cardHTML;
+            els.messagesList.appendChild(resultWrapper);
+            scrollToBottom();
         }
 
-        // Auto-resize textarea
-        userInput.addEventListener('input', function () {
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
-            if (this.value === '') this.style.height = 'auto';
-        });
+        // Event Listeners
+        els.sendBtn.addEventListener('click', handleSubmission);
 
-        userInput.addEventListener('keydown', (e) => {
+        els.userInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 handleSubmission();
-                // Reset height after submission
-                userInput.style.height = 'auto';
             }
         });
 
-        sendBtn.addEventListener('click', handleSubmission);
+        // Modal Logic
+        window.openModal = function () {
+            els.legalModal.classList.remove('hidden');
+        };
+        els.cancelModalBtn.addEventListener('click', () => els.legalModal.classList.add('hidden'));
+        els.modalBackdrop.addEventListener('click', () => els.legalModal.classList.add('hidden'));
 
-        // 모달 로직 (Modal Logic)
-        window.openModal = function () { // 인라인 onclick을 위해 window에 첨부
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.add('opacity-100');
-            }, 10);
-        }
+        // Share Feature
+        window.shareResult = function (id) {
+            // Simulate link copy
+            const dummyLink = `https://idea-vault.gemini.demo/share/${id}`;
+            navigator.clipboard.writeText(dummyLink).then(() => {
+                const btn = document.querySelector('.tooltip-trigger');
+                const tooltip = btn.querySelector('.tooltip-content');
 
-        function hideModal() {
-            modal.classList.remove('opacity-100');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300); // 트랜지션 대기
-        }
+                // Change tooltip text temporarily
+                const originalText = tooltip.textContent;
+                tooltip.textContent = "Copied!";
+                tooltip.classList.remove('opacity-0');
 
-        closeModalBtn.addEventListener('click', hideModal);
-        cancelModalBtn.addEventListener('click', hideModal);
-        modalBackdrop.addEventListener('click', hideModal);
-
-        // 공유 모달 요소 (Share Modal Elements)
-        const shareModal = document.getElementById('share-modal');
-        const shareModalBackdrop = document.getElementById('share-modal-backdrop');
-        const closeShareModalBtn = document.getElementById('close-share-modal');
-
-        // 공유 모달 로직 (Share Modal Logic)
-        window.openShareModal = function () {
-            shareModal.classList.remove('hidden');
-            setTimeout(() => {
-                shareModal.classList.add('opacity-100');
-            }, 10);
-        }
-
-        function hideShareModal() {
-            shareModal.classList.remove('opacity-100');
-            setTimeout(() => {
-                shareModal.classList.add('hidden');
-            }, 300);
-        }
-
-        closeShareModalBtn.addEventListener('click', hideShareModal);
-        shareModalBackdrop.addEventListener('click', hideShareModal);
+                setTimeout(() => {
+                    tooltip.classList.add('opacity-0');
+                    setTimeout(() => tooltip.textContent = "Copy Link", 300);
+                }, 2000);
+            });
+        };
 
     </script>
 </body>
